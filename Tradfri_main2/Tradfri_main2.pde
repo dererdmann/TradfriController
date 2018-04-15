@@ -26,8 +26,10 @@ int dId;
 boolean dOn;
 int dim;
 int activeSound;
+int modulate;
 
 int oldSound = 0;
+int oldSelectedOn = 0;
 
 int activeField;
 
@@ -37,7 +39,7 @@ int effect;
 Dimmer d1;
 
 void setup() {
-  
+
 
   //arduino input
   String portName = Serial.list()[2]; //check the port
@@ -47,18 +49,17 @@ void setup() {
   client = new MQTTClient(this);
   client.connect("mqtt://127.0.0.1", "processing");
   client.subscribe("#");
-  
-   myBus = new MidiBus(this, -1, 1);
-  
-  d1 = new Dimmer(0, 0, 0);
+
+  myBus = new MidiBus(this, -1, 1);
+
+  d1 = new Dimmer(0, 0, 0, 0, 0);
 }
 
 void draw() {
-  activeField = -1;
+  //activeField = -1;
   parseSerial();
   createDimmer();
   d1.update();
-  
 }
 
 
@@ -108,8 +109,11 @@ void parseSerial() {
       //println("9");
       activeField = 9;
       break;
+    case 10: 
+      //println("9");
+      activeField = 10;
+      break;
     }
-    
   }
 }
 
@@ -119,12 +123,19 @@ void createDimmer() {
 
   //soundselection
   if (activeField == 0) {
-    println("field active");
-   if (currentOn ==1){
-    activeSound = round(map(currentDim, 1, 254, 1, 5));
-   }
+
+    if (currentOn ==1) {
+      activeSound = round(map(currentDim, 1, 254, 1, 5));
+      //println(activeSound);
+    }
     //println("activeSound "+ "of Controller " + currentId + " is: " + activeSound);
-    d1 = new Dimmer(currentId, activeSound, currentOn);
+    d1 = new Dimmer(currentId, activeSound, currentOn, 0, activeField);
+  } 
+
+  if (activeField == 10) {
+    modulate =  int(map(currentDim, 1, 254, 0, 127));
+    println(modulate);
+    d1 = new Dimmer(currentId, activeSound, currentOn, modulate, activeField);
   }
 
   /*when active field is 0
@@ -162,7 +173,7 @@ void messageReceived(String topic, byte[] payload) {
   }
 
   if (currentOn == 1) {
-    println("Controller " + currentId + " hat den Wert: " + currentDim);
+    //println("Controller " + currentId + " hat den Wert: " + currentDim);
   } else {
     //println("Controller " + currentId + " ist ausgeschaltet.");
     activeSound = 0;

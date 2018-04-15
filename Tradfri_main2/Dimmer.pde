@@ -2,22 +2,43 @@ class Dimmer {
   int selectedSound = 0;
   int selectedId;
   int selectedOn;
+  int selectedModulate;
+  int selectedField;
+  int modulated;
   int midiNote1 = 0;
   int midiNote2 = 0;
   int channel = 0;
   int velocity = 127;
-  boolean play = false;
-  
+  int oldSelectedModulate;
 
-  Dimmer(int id, int sound, int on) {
+
+  int number1 = 0;
+  int number2 = 1;
+
+  int mute1 = 36;
+  int mute2 = 37;
+
+  boolean play = false;
+  boolean playMod = false;
+  boolean playOn = false;
+
+
+
+  Dimmer(int id, int sound, int on, int modulated, int activatedField) {
     selectedSound = sound;
     selectedId = id;
     selectedOn = on;
+    selectedModulate = modulated;
+    selectedField = activatedField;
   }
 
   void update() {  
-    println(oldSound);
+    //println(selectedOn);
     switch(selectedSound) {
+    case 0:
+      midiNote1 = 39;
+      midiNote2 = 39;
+      break;
     case 1:  
       midiNote1 = 48;
       midiNote2 = 45;
@@ -40,38 +61,107 @@ class Dimmer {
       break;
     } 
 
-if (selectedSound != oldSound){
-  play= true;
-  println("change!!!!!");
-}
+    if (selectedSound != oldSound) {
+      play = true;
+    }
+    if (selectedModulate != oldSelectedModulate) {
+      playMod= true;
+    }
+    if (selectedOn != oldSelectedOn) {
+      playOn= true;
+    }
+
+
+//println(selectedSound);
 
     //println(selectedId + "  " + selectedSound + "  " + selectedOn);
-    if ( play == true) {
-      if (selectedOn == 1) {
-        if (selectedId == 1) {
-          myBus.sendNoteOn(channel, midiNote1, velocity); // Send a Midi noteOn
-          //delay(200);
-          myBus.sendNoteOff(channel, midiNote1, velocity); // Send a Midi nodeOff
-          oldSound = selectedSound;
-          play = false;
-          println("1played");
-          
+
+    //SOUNDAUSWAHL___________________________
+    if (selectedField == 0) {
+      if ( play == true) {
+        if (selectedOn == 1) {
+          if (selectedId == 1) {
+            myBus.sendNoteOn(channel, midiNote1, velocity); // Send a Midi noteOn
+            //delay(200);
+            myBus.sendNoteOff(channel, midiNote1, velocity); // Send a Midi nodeOff
+            oldSound = selectedSound;
+            play = false;
+            //println("1played");
+          }
+          if (selectedId == 2) {
+            myBus.sendNoteOn(channel, midiNote2, velocity); // Send a Midi noteOn
+            //delay(200);
+            myBus.sendNoteOff(channel, midiNote2, velocity); // Send a Midi nodeOff
+            oldSound = selectedSound;
+            play = false;
+            //println("2played");
+          }
         }
-        if (selectedId == 2) {
-          myBus.sendNoteOn(channel, midiNote2, velocity); // Send a Midi noteOn
-          //delay(200);
-          myBus.sendNoteOff(channel, midiNote2, velocity); // Send a Midi nodeOff
-          oldSound = selectedSound;
-          play = false;
-          println("2played");
-          
+        if (selectedOn == 0) {
+          if (selectedId == 1) {
+            myBus.sendNoteOn(channel, 28, velocity); // Send a Midi noteOn
+            //delay(200);
+            myBus.sendNoteOff(channel, 28, velocity); // Send a Midi nodeOff
+            oldSound = selectedSound;
+            play = false;
+            println("1 soundselector deleted");
+          }
+          if (selectedId == 2) {
+            myBus.sendNoteOn(channel, 29, velocity); // Send a Midi noteOn
+            //delay(200);
+            myBus.sendNoteOff(channel, 29, velocity); // Send a Midi nodeOff
+            oldSound = selectedSound;
+            play = false;
+            println("2 soundselector deleted");
+          }
         }
       }
     }
-    println(oldSound);
-    
+
+    //PerfoModus___________________________
+    if (selectedField == 10) {
+      if ( playMod == true) {
+        if (selectedOn == 1) {
+          if (selectedId == 1) {
+            myBus.sendControllerChange(channel, number1, selectedModulate); // send modulation data
+            //println("Send Dimmer 1 " + selectedModulate + " to Ableton");
+
+            oldSelectedModulate = selectedModulate;
+            playMod = false;
+            
+          }
+          if (selectedId == 2) {
+            //println("Send Dimmer 2 " + selectedModulate + " to Ableton");
+            myBus.sendControllerChange(channel, number2, selectedModulate); // send modulation data 
+            oldSelectedModulate = selectedModulate;
+            playMod = false;
+            
+          }
+        }
+        if (playOn == true) {
+          if (selectedOn == 0) {
+            if (selectedId == 1) {
+
+              myBus.sendNoteOn(channel, mute1, velocity); // Send a Midi noteOn
+              //delay(200);
+              myBus.sendNoteOff(channel, mute1, velocity); // Send a Midi nodeOff
+              oldSelectedOn = selectedOn;
+              playMod = false;
+              println("1 muted");
+            }
+            if (selectedId == 2) {
+              myBus.sendNoteOn(channel, mute2, velocity); // Send a Midi noteOn
+              //delay(200);
+              myBus.sendNoteOff(channel, mute2, velocity); // Send a Midi nodeOff
+              oldSelectedOn = selectedOn;
+              playMod = false;
+              println("2 muted");
+            }
+          }
+        }
+      }
+    }
+    oldSelectedOn = selectedOn;
+    oldSelectedModulate = selectedModulate;
   }
-  
-  
-  
 }
