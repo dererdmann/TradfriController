@@ -28,6 +28,11 @@ int dim;
 int activeSound;
 int modulate;
 
+int fadeModulate;
+int oldModulate;
+int selectedModulate;
+int oldSelectedModulate;
+
 int oldSound = 0;
 int oldSelectedOn = 0;
 
@@ -39,7 +44,7 @@ int effect;
 Dimmer d1;
 
 void setup() {
-
+  
 
   //arduino input
   String portName = Serial.list()[2]; //check the port
@@ -58,10 +63,13 @@ void setup() {
 void draw() {
   //activeField = -1;
   parseSerial();
+  fadeModulater();
   createDimmer();
   d1.update();
 }
 
+void fadeModulater() {
+}
 
 
 void parseSerial() {
@@ -133,26 +141,22 @@ void createDimmer() {
   } 
 
   if (activeField == 10) {
-    modulate =  int(map(currentDim, 1, 254, 0, 127));
-    println(modulate);
-    d1 = new Dimmer(currentId, activeSound, currentOn, modulate, activeField);
-  }
 
-  /*when active field is 0
-   then sound select shit
-   
-   when active field is 1
-   then effect select shit
-   
-   write that shit into dimmer class  
-   create dimmer with 
-   
-   int id;
-   int sound;
-   int effect;
-   
-   d= new Dimmer(with that shit in here);
-   */
+
+    modulate =  int(map(currentDim, 1, 254, 0, 127));
+    //println(fadeModulate);
+
+    if (oldModulate < modulate) {
+      oldModulate = oldModulate +1;
+    }
+    if (oldModulate > modulate) {
+      oldModulate = oldModulate -1;
+    }
+
+    fadeModulate = oldModulate;
+    d1 = new Dimmer(currentId, activeSound, currentOn, fadeModulate, activeField);
+  }
+  //println("activeField:" + activeField);
 }
 
 void messageReceived(String topic, byte[] payload) {
