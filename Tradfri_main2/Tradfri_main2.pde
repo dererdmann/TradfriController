@@ -44,8 +44,6 @@ int effect;
 Dimmer d1;
 
 void setup() {
-  
-
   //arduino input
   String portName = Serial.list()[2]; //check the port
   myPort = new Serial(this, portName, 9600);
@@ -63,14 +61,9 @@ void setup() {
 void draw() {
   //activeField = -1;
   parseSerial();
-  fadeModulater();
   createDimmer();
   d1.update();
 }
-
-void fadeModulater() {
-}
-
 
 void parseSerial() {
   if ( myPort.available() > 0) {  // If data is available,
@@ -125,10 +118,7 @@ void parseSerial() {
   }
 }
 
-
-
 void createDimmer() {
-
   //soundselection
   if (activeField == 0) {
 
@@ -142,17 +132,15 @@ void createDimmer() {
 
   if (activeField == 10) {
 
-
     modulate =  int(map(currentDim, 1, 254, 0, 127));
     //println(fadeModulate);
-
+    //modulate fader
     if (oldModulate < modulate) {
       oldModulate = oldModulate +1;
     }
     if (oldModulate > modulate) {
       oldModulate = oldModulate -1;
     }
-
     fadeModulate = oldModulate;
     d1 = new Dimmer(currentId, activeSound, currentOn, fadeModulate, activeField);
   }
@@ -160,7 +148,6 @@ void createDimmer() {
 }
 
 void messageReceived(String topic, byte[] payload) {
-
   //convert payload from Byte to String to Int
   intPayload = int(new String(payload));
 
@@ -184,7 +171,4 @@ void messageReceived(String topic, byte[] payload) {
     //println("shutoff");
   }
   //println(topic + " " + new String(payload)); //print all
-
-  /*change the sound/effect/parameter of currentId dimmer via currentDim or delete 
-   if currentOn is 0 of currentId*/
 }

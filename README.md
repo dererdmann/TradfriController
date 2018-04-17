@@ -35,6 +35,8 @@ You should be able to see the dimmer values come in as
 TRÅDFRI/bulb/nameOfTheBulb/state/on  1
 TRÅDFRI/bulb/nameOfTheBulb/state/dim  126
 ```
+(nameOfTheBulb is defined in the Ikea Tradfri App)
+
 Install a MidiBus via IAC Bus (mac) or [Midi Yoke](http://www.midiox.com) (win) to send the commands to Ableton.
 
 Connect Ableton to the created Bus and put the right output in the "processing.pde". If you are not sure which one it is use
