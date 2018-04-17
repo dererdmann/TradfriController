@@ -55,7 +55,7 @@ class Dimmer {
       midiNote1 = 44;
       midiNote2 = 41 ;
       break;
-    } 
+    }
 
     if (selectedSound != oldSound) {
       play = true;
@@ -66,9 +66,6 @@ class Dimmer {
     if (selectedOn != oldSelectedOn) {
       playOn= true;
     }
-    //println(selectedSound);
-
-    //println(selectedId + "  " + selectedSound + "  " + selectedOn);
 
     //SOUNDSelector___________________________
     if (selectedField == 0) {
@@ -76,32 +73,26 @@ class Dimmer {
         if (selectedOn == 1) {
           if (selectedId == 1) {
             myBus.sendNoteOn(channel, midiNote1, velocity); // Send a Midi noteOn
-            //delay(200);
             myBus.sendNoteOff(channel, midiNote1, velocity); // Send a Midi nodeOff
             oldSound = selectedSound;
             play = false;
-            //println("1played");
           }
           if (selectedId == 2) {
             myBus.sendNoteOn(channel, midiNote2, velocity); // Send a Midi noteOn
-            //delay(200);
             myBus.sendNoteOff(channel, midiNote2, velocity); // Send a Midi nodeOff
             oldSound = selectedSound;
             play = false;
-            //println("2played");
           }
         }
         if (selectedOn == 0) {
           if (selectedId == 1) {
             myBus.sendNoteOn(channel, 28, velocity); // Send a Midi noteOn
-            //delay(200);
             myBus.sendNoteOff(channel, 28, velocity); // Send a Midi nodeOff
             oldSound = selectedSound;
             play = false;
           }
           if (selectedId == 2) {
             myBus.sendNoteOn(channel, 29, velocity); // Send a Midi noteOn
-            //delay(200);
             myBus.sendNoteOff(channel, 29, velocity); // Send a Midi nodeOff
             oldSound = selectedSound;
             play = false;
@@ -117,13 +108,11 @@ class Dimmer {
           if (selectedId == 1) {
             myBus.sendControllerChange(channel, number1, selectedModulate); // send modulation data
             //println("Send Dimmer 1 " + selectedModulate + " to Ableton");
-            //oldSelectedModulate = selectedModulate;
             playMod = false;
           }
           if (selectedId == 2) {
             //println("Send Dimmer 2 " + selectedModulate + " to Ableton");
             myBus.sendControllerChange(channel, number2, selectedModulate); // send modulation data 
-            //oldSelectedModulate = selectedModulate;
             playMod = false;
           }
         }
@@ -131,14 +120,12 @@ class Dimmer {
           if (selectedOn == 0) {
             if (selectedId == 1) {
               myBus.sendNoteOn(channel, mute1, velocity); // Send a Midi noteOn
-              //delay(200);
               myBus.sendNoteOff(channel, mute1, velocity); // Send a Midi nodeOff
               oldSelectedOn = selectedOn;
               playMod = false;
             }
             if (selectedId == 2) {
               myBus.sendNoteOn(channel, mute2, velocity); // Send a Midi noteOn
-              //delay(200);
               myBus.sendNoteOff(channel, mute2, velocity); // Send a Midi nodeOff
               oldSelectedOn = selectedOn;
               playMod = false;

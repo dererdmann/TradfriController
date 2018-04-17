@@ -59,7 +59,6 @@ void setup() {
 }
 
 void draw() {
-  //activeField = -1;
   parseSerial();
   createDimmer();
   d1.update();
@@ -133,7 +132,6 @@ void createDimmer() {
   if (activeField == 10) {
 
     modulate =  int(map(currentDim, 1, 254, 0, 127));
-    //println(fadeModulate);
     //modulate fader
     if (oldModulate < modulate) {
       oldModulate = oldModulate +1;
@@ -144,7 +142,6 @@ void createDimmer() {
     fadeModulate = oldModulate;
     d1 = new Dimmer(currentId, activeSound, currentOn, fadeModulate, activeField);
   }
-  //println("activeField:" + activeField);
 }
 
 void messageReceived(String topic, byte[] payload) {
@@ -168,7 +165,5 @@ void messageReceived(String topic, byte[] payload) {
   } else {
     //println("Controller " + currentId + " ist ausgeschaltet.");
     activeSound = 0;
-    //println("shutoff");
   }
-  //println(topic + " " + new String(payload)); //print all
 }
